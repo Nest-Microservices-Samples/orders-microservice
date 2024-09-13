@@ -22,7 +22,7 @@ export class OrdersController {
     return this.ordersService.findOne(id);
   }
 
-  @MessagePattern('chageOrderStatus')
+  @MessagePattern('changeOrderStatus')
   changeOrderStatus() {
     throw new NotImplementedException();
   }

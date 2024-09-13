@@ -14,4 +14,8 @@ export class OrdersService {
   findOne(id: number) {
     return `This action returns a #${id} order`;
   }
+
+  changeStatus(id: string) {
+    return `This action changes the status of order #${id}`;
+  }
 }
