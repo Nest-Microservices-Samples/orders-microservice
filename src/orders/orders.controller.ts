@@ -18,8 +18,8 @@ export class OrdersController {
   }
 
   @MessagePattern('findOneOrder')
-  findOne(@Payload() id: number) {
-    return this.ordersService.findOne(id);
+  findOne( @Payload() id: string ) {
+    return this.ordersService.findOne( id );
   }
 
   @MessagePattern('changeOrderStatus')
