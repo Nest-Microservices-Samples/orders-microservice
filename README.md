@@ -14,8 +14,8 @@ Microservice built with NestJS to manage order-related operations. This microser
 ## 🚀 Development Setup
 
 1. **📥 Clone the repository:**
-   git clone https://github.com/YourUsername/orders-microservice
-   cd orders-microservice
+   git clone https://github.com/Nest-Microservices-Samples/products-microservice.git
+   cd products-microservice
 
 2. **📦 Install dependencies:**
    npm install
