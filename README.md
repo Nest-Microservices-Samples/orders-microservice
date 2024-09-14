@@ -8,7 +8,8 @@
 
 1. **📥 Clone the repository:**
 ```bash
- git clone https://github.com/Nest-Microservices-Samples/products-microservice.git cd products-microservice
+ git clone https://github.com/Nest-Microservices-Samples/products-microservice.git
+ cd products-microservice
  ```
 
 2. **📦 Install dependencies:**
