@@ -56,7 +56,6 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
       throw new RpcException({
         status: HttpStatus.NOT_FOUND,
         message: `Order with id ${ id } not found`,
-
       })
     }
 
