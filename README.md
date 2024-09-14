@@ -29,7 +29,8 @@
 
 5. **🗃️ Run Prisma migrations and generate the client:**
 ```bash
- npx prisma migrate dev npx prisma generate
+ npx prisma migrate dev
+ npx prisma generate
 ```
 
 6. **🛠️ Start the application in development mode:**
