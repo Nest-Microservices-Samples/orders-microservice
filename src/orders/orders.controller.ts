@@ -5,7 +5,12 @@ import { ChangeOrderStatusDto, CreateOrderDto, OrderPaginationDto } from './dto'
 
 @Controller()
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+
+  constructor(
+
+    private readonly ordersService: OrdersService
+
+  ) {}
 
   @MessagePattern('createOrder')
   create(@Payload() createOrderDto: CreateOrderDto) {
