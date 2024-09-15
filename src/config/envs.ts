@@ -13,6 +13,7 @@ interface EnvVars {
 // Define the validation schema for environment variables
 const envsSchema = joi.object({
     PORT: joi.number().required(), // PORT must be a number and is required
+
     PRODUCTS_MICROSERVICE_HOST: joi.string().required(), // PRODUCTS_MICROSERVICE_HOST must be a string and is required
     PRODUCTS_MICROSERVICE_PORT: joi.number().required(), // PRODUCTS_MICROSERVICE_PORT must be a number and is required
 })
@@ -32,6 +33,7 @@ const envVars: EnvVars = value;
 // Export the validated and typed environment variables
 export const envs = {
     port: envVars.PORT,
+
     productsMicroserviceHost: envVars.PRODUCTS_MICROSERVICE_HOST,
     productsMicroservicePort: envVars.PRODUCTS_MICROSERVICE_PORT,
 }
