@@ -1,5 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import { PRODUCT_SERVICE } from 'src/config';
 
 @Injectable()
@@ -13,6 +14,21 @@ export class ProductsService {
     ) {}
 
     async validateProducts( ids: number[] ) {
-        return this.productsClient.send({ cmd: 'validate_products'},  ids );
+
+        try {
+
+            const products = await firstValueFrom(
+                this.productsClient.send({ cmd: 'validate_products'},  ids )
+            );
+
+            return products;
+
+        } catch (error) {
+
+            throw new RpcException({
+                status: HttpStatus.BAD_REQUEST,
+                message: error,
+            });
+        }
     }
 }
