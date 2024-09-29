@@ -2,19 +2,28 @@ import { Controller, ParseUUIDPipe } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { OrdersService } from './orders.service';
 import { ChangeOrderStatusDto, CreateOrderDto, OrderPaginationDto } from './dto';
+import { ProductsService } from 'src/products/products.service';
 
 @Controller()
 export class OrdersController {
 
   constructor(
 
-    private readonly ordersService: OrdersService
+    private readonly ordersService: OrdersService,
+    private readonly productsService: ProductsService,
 
   ) {}
 
   @MessagePattern('createOrder')
-  create(@Payload() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create( createOrderDto );
+  async create(@Payload() createOrderDto: CreateOrderDto) {
+
+    const order = await this.ordersService.create( createOrderDto );
+    const paymentSession = await this.productsService.createPaymentSession( order );
+
+    return {
+      order,
+      paymentSession,
+    };
   }
 
   @MessagePattern('findAllOrders')

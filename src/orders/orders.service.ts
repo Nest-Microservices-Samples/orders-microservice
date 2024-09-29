@@ -5,6 +5,7 @@ import { RpcException } from '@nestjs/microservices';
 import { ChangeOrderStatusDto, OrderPaginationDto } from './dto';
 import { ProductsService } from 'src/products/products.service';
 
+
 @Injectable()
 export class OrdersService extends PrismaClient implements OnModuleInit {
 
@@ -18,10 +19,12 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
     super();
   }
 
+
   async onModuleInit() {
     await this.$connect();
     this.logger.log('Database connected');
   }
+
 
   async create(createOrderDto: CreateOrderDto) {
 
@@ -97,6 +100,7 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
 
   }
 
+
   async findAll( orderPaginationDto: OrderPaginationDto ) {
 
     const totalPages = await this.order.count({
@@ -121,6 +125,7 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
       }
     }
   }
+
 
   async findOne( id: string ) {
 
@@ -159,6 +164,7 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
 
   }
 
+
   async changeStatus( changeOrderStatusDto: ChangeOrderStatusDto) {
 
     const { id, status } = changeOrderStatusDto;
@@ -174,4 +180,7 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
       data: { status },
     })
   }
+
+
+
 }
