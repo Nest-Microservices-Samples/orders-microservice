@@ -20,6 +20,7 @@ export class OrdersController {
     const order = await this.ordersService.create( createOrderDto );
     const paymentSession = await this.productsService.createPaymentSession( order );
 
+
     return {
       order,
       paymentSession,
