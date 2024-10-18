@@ -1,7 +1,9 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { PrismaClient } from '@prisma/client';
 import { firstValueFrom } from 'rxjs';
 import { NATS_SERVICE } from 'src/config';
+import { OrderWithProducts } from 'src/orders/interfaces/order-with-products.interface';
 
 @Injectable()
 export class ProductsService {
@@ -31,4 +33,26 @@ export class ProductsService {
             });
         }
     };
+
+
+    async createPaymentSession(order: OrderWithProducts) {
+
+        const paymentSession = await firstValueFrom(
+            this.client.send('create.payment.session', {
+                orderId: order.id,
+                currency: 'usd',
+                items: [
+                    {
+                        name: 'Product 1',
+                        price: 100,
+                        quantity: 2,
+                    }
+                ]
+            })
+        )
+
+
+        return paymentSession;
+    }
+
 }

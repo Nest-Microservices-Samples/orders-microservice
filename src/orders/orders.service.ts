@@ -1,9 +1,11 @@
-import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { PrismaClient } from '@prisma/client';
-import { RpcException } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { ChangeOrderStatusDto, OrderPaginationDto } from './dto';
 import { ProductsService } from 'src/products/products.service';
+import { OrderWithProducts } from './interfaces/order-with-products.interface';
+import { firstValueFrom } from 'rxjs';
 
 
 @Injectable()
