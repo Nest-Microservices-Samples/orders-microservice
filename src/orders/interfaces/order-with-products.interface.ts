@@ -2,7 +2,6 @@ import { OrderStatus } from "@prisma/client";
 
 export interface OrderWithProducts {
 
-
     OrderItem: {
         name: any;
         productId: number;
@@ -17,5 +16,4 @@ export interface OrderWithProducts {
     paidAt: Date;
     createdAt: Date;
     updateAt: Date;
-
 }
