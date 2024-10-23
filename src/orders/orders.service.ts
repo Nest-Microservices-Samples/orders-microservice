@@ -6,6 +6,7 @@ import { ChangeOrderStatusDto, OrderPaginationDto } from './dto';
 import { ProductsService } from 'src/products/products.service';
 import { OrderWithProducts } from './interfaces/order-with-products.interface';
 import { firstValueFrom } from 'rxjs';
+import { PaidOrderDto } from './dto/paid-order.dto';
 
 
 @Injectable()
@@ -32,25 +33,25 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
 
     try {
 
-      const productsIds = createOrderDto.items.map( item => item.productId );
+      const productsIds = createOrderDto.items.map(item => item.productId);
 
       // Confirm that all products are valid.
-      const products: any[] = await this.productsService.validateProducts( productsIds );
+      const products: any[] = await this.productsService.validateProducts(productsIds);
 
       // Calculation of values.
-      const totalAmount = createOrderDto.items.reduce( ( acc, orderItem ) => {
+      const totalAmount = createOrderDto.items.reduce((acc, orderItem) => {
 
         const price = products.find(
           product => product.id === orderItem.productId,
         ).price;
 
-        return ( price * orderItem.quantity ) + acc;
+        return (price * orderItem.quantity) + acc;
 
-      }, 0 );
+      }, 0);
 
-      const totalItems = createOrderDto.items.reduce( ( acc, orderItem ) => {
+      const totalItems = createOrderDto.items.reduce((acc, orderItem) => {
         return orderItem.quantity + acc;
-      }, 0 );
+      }, 0);
 
       // Create a database transaction.
       const order = await this.order.create({
@@ -59,9 +60,9 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
           totalItems,
           OrderItem: {
             createMany: {
-              data: createOrderDto.items.map( ( orderItem ) => ({
+              data: createOrderDto.items.map((orderItem) => ({
                 price: products.find(
-                  ( product ) => product.id === orderItem.productId
+                  (product) => product.id === orderItem.productId
                 ).price,
                 productId: orderItem.productId,
                 quantity: orderItem.quantity,
@@ -83,10 +84,10 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
 
       return {
         ...order,
-        OrderItem: order.OrderItem.map( ( orderItem ) => ({
+        OrderItem: order.OrderItem.map((orderItem) => ({
           ...orderItem,
           name: products.find(
-            ( product ) => product.id === orderItem.productId ).name,
+            (product) => product.id === orderItem.productId).name,
         })),
       };
 
@@ -100,10 +101,10 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
   }
 
 
-  async findAll( orderPaginationDto: OrderPaginationDto ) {
+  async findAll(orderPaginationDto: OrderPaginationDto) {
 
     const totalPages = await this.order.count({
-      where: { status: orderPaginationDto.status}
+      where: { status: orderPaginationDto.status }
     })
 
     const currentPage = orderPaginationDto.page;;
@@ -111,7 +112,7 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
 
     return {
       data: await this.order.findMany({
-        skip: ( currentPage - 1 ) * perPage,
+        skip: (currentPage - 1) * perPage,
         take: perPage,
         where: {
           status: orderPaginationDto.status
@@ -120,13 +121,13 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
       meta: {
         total: totalPages,
         page: currentPage,
-        lastPage: Math.ceil( totalPages / perPage ),
+        lastPage: Math.ceil(totalPages / perPage),
       }
     }
   }
 
 
-  async findOne( id: string ) {
+  async findOne(id: string) {
 
     const order = await this.order.findFirst({
       where: { id },
@@ -141,36 +142,36 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
       }
     });
 
-    if ( !order ) {
+    if (!order) {
 
       throw new RpcException({
         status: HttpStatus.NOT_FOUND,
-        message: `Order with id ${ id } not found`,
+        message: `Order with id ${id} not found`,
       })
     }
 
-    const productsIds = order.OrderItem.map( ( orderItem ) => orderItem.productId );
-    const products: any[] = await this.productsService.validateProducts( productsIds );
+    const productsIds = order.OrderItem.map((orderItem) => orderItem.productId);
+    const products: any[] = await this.productsService.validateProducts(productsIds);
 
     return {
       ...order,
-      OrderItem: order.OrderItem.map( ( orderItem ) => ({
+      OrderItem: order.OrderItem.map((orderItem) => ({
         ...orderItem,
         name: products.find(
-          ( product ) => product.id === orderItem.productId ).name,
+          (product) => product.id === orderItem.productId).name,
       }))
     }
 
   }
 
 
-  async changeStatus( changeOrderStatusDto: ChangeOrderStatusDto) {
+  async changeStatus(changeOrderStatusDto: ChangeOrderStatusDto) {
 
     const { id, status } = changeOrderStatusDto;
 
-    const order = await this.findOne( id );
+    const order = await this.findOne(id);
 
-    if ( order.status === status ) {
+    if (order.status === status) {
       return order;
     }
 
@@ -178,6 +179,33 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
       where: { id },
       data: { status },
     })
+  }
+
+  async paidOrder(paidORderDto: PaidOrderDto) {
+
+    this.logger.log('Order Paid');
+    this.logger.log(paidORderDto);
+
+    const order = await this.order.update({
+      where: { id: paidORderDto.orderId },
+      data: {
+        status: 'PAID',
+        paid: true,
+        paidAt: new Date(),
+        stripeChargeId: paidORderDto.stripePaymentId,
+
+
+        // The relation
+        OrderReceipt: {
+          create: {
+            receiptUrl: paidORderDto.receipUrl,
+          }
+        }
+      }
+    });
+
+    return order;
+
   }
 
 }
