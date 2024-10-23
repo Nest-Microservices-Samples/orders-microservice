@@ -197,10 +197,13 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
 
         // The relation
         OrderReceipt: {
-          create: {
-            receiptUrl: paidOrderDto.receipUrl,
-          }
-        }
+          connectOrCreate: {
+            where: { orderId: paidOrderDto.orderId },  // Attempts to connect an existing OrderReceipt
+            create: {                                  // If it does not exist, create it
+              receiptUrl: paidOrderDto.receipUrl,
+            },
+          },
+        },
       }
     });
 
