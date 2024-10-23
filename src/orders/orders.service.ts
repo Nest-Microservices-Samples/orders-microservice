@@ -181,24 +181,24 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
     })
   }
 
-  async paidOrder(paidORderDto: PaidOrderDto) {
+  async paidOrder(paidOrderDto: PaidOrderDto) {
 
     this.logger.log('Order Paid');
-    this.logger.log(paidORderDto);
+    this.logger.log(paidOrderDto);
 
     const order = await this.order.update({
-      where: { id: paidORderDto.orderId },
+      where: { id: paidOrderDto.orderId },
       data: {
         status: 'PAID',
         paid: true,
         paidAt: new Date(),
-        stripeChargeId: paidORderDto.stripePaymentId,
+        stripeChargeId: paidOrderDto.stripePaymentId,
 
 
         // The relation
         OrderReceipt: {
           create: {
-            receiptUrl: paidORderDto.receipUrl,
+            receiptUrl: paidOrderDto.receipUrl,
           }
         }
       }
