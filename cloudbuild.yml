@@ -2,6 +2,10 @@
 
 
 steps:
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 - name: 'gcr.io/cloud-builders/docker'
   entrypoint: 'bash'
   args:
@@ -17,8 +21,7 @@ steps:
       'southamerica-east1-docker.pkg.dev/tienda-microservices-442115/image-registry/orders-ms',
     ]
 
-options:
-  logging: CLOUD_LOGGING_ONLY
+
 
 availableSecrets:
   secretManager:
