@@ -1,6 +1,7 @@
 
 
 
+
 steps:
 
 options:
@@ -20,8 +21,6 @@ options:
       'push',
       'southamerica-east1-docker.pkg.dev/tienda-microservices-442115/image-registry/orders-ms',
     ]
-
-
 
 availableSecrets:
   secretManager:
